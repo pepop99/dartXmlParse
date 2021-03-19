@@ -1,8 +1,12 @@
 import 'dart:convert';
-import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
+import 'normalize.dart';
+import 'package:xml/xml.dart';
+
+import 'parseXml.dart';
 
 void parseLisence() async{
+  //url is being for testing purposes only, later a tar file will be used which will be searched for LICENSE file
   var url = Uri.parse('https://raw.githubusercontent.com/spdx/license-list-XML/master/src/MIT-Modern-Variant.xml');
   var request = http.Request('GET', url);
   
@@ -15,14 +19,15 @@ void parseLisence() async{
       responseString += bytes;
     }
 
-    //parse the response string as xml
-    // print(responseString);
-    var normalizedString = responseString.replaceAll(new RegExp("<[^>]+>"), '');
-    normalizedString = normalizedString.replaceAll(new RegExp("/^[\s#*_]*end of terms and conditions[\s#*_]*/i"), '');
-    print(normalizedString);
-    var xmlString = xml.XmlDocument.parse(responseString);
-    
-    // print(xmlString);
+    var xmlDoc = XmlDocument.parse(responseString);
+
+    //parse the response string
+    var parser = xmlParser(xmlDoc);
+    var parsedString = parser.parse();
+    print(parsedString);
+
+    // The normalizer will normalize the parsed string according to SPDX guidlines
+    // var normalizer = Normalize(parsedString);
   }
   else {
     print(response.reasonPhrase);
