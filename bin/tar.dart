@@ -4,7 +4,7 @@ import 'package:archive/archive_io.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-void getTarBallLink(String packageName) async{
+void getTarBall(String packageName) async{
   var headers = {
     'Accept': 'application/vnd.pub.v2+json'
   };
@@ -32,14 +32,43 @@ void getTarBallLink(String packageName) async{
   if(requestTarResponse.statusCode == 200){
     tar_data = await requestTarResponse.stream.toBytes();
   }
+  final archive = GZipDecoder().decodeBytes(tar_data);
+  final archive1 = TarDecoder().decodeBytes(archive);
+  for (final file in archive1) {
+    print(file.name);
+    // final filename = file.name;
+    // if (file.isFile) {
+    //   final data = file.content as List<int>;
+    //   File('out/' + filename)
+    //     ..createSync(recursive: true)
+    //     ..writeAsBytesSync(data);
+    // } else {
+    //   await Directory('out/' + filename)
+    //     .create(recursive: true);
+    // }
+  }
   final tarGz = GZipEncoder().encode(tar_data);
   final fp = File('$packageName.tar.gz');
   fp.writeAsBytesSync(tarGz);
+  // var responseObject = json.decode(responseString);
+  // var archiveUrl = Uri.parse(responseObject['latest']['archive_url']);
+
+  // var requestTar = http.Request('GET', archiveUrl);
+
+  // var requestTarResponse = await requestTar.send();
+  
+  // var tar_data;
+  // if(requestTarResponse.statusCode == 200){
+  //   tar_data = await requestTarResponse.stream.toBytes();
+  // }
+  // final tarGz = GZipEncoder().encode(tar_data);
+  // final fp = File('$packageName.tar.gz');
+  // fp.writeAsBytesSync(tarGz);
 }
 void main(List<String> arguments) async{
   if(arguments.isEmpty){
     print('invalid');
     exit(1);
   }
-  getTarBallLink(arguments[0]);
+  getTarBall(arguments[0]);
 }
