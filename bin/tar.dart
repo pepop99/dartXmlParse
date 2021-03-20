@@ -4,11 +4,11 @@ import 'package:archive/archive_io.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-void getTarBallLink() async{
+void getTarBallLink(String packageName) async{
   var headers = {
     'Accept': 'application/vnd.pub.v2+json'
   };
-  var request = http.Request('GET', Uri.parse('https://pub.dartlang.org/api/packages/location'));
+  var request = http.Request('GET', Uri.parse('https://pub.dartlang.org/api/packages/$packageName'));
   
   request.headers.addAll(headers);
   
@@ -33,9 +33,13 @@ void getTarBallLink() async{
     tar_data = await requestTarResponse.stream.toBytes();
   }
   final tarGz = GZipEncoder().encode(tar_data);
-  final fp = File('test.tar.gz');
+  final fp = File('$packageName.tar.gz');
   fp.writeAsBytesSync(tarGz);
 }
-void main() {
-  getTarBallLink();
+void main(List<String> arguments) async{
+  if(arguments.isEmpty){
+    print('invalid');
+    exit(1);
+  }
+  getTarBallLink(arguments[0]);
 }
