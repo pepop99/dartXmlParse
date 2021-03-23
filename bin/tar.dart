@@ -40,7 +40,7 @@ void getTarBall(String packageName) async{
     //replace with regex to identify LICENSE file
     if (file.isFile && filename == 'LICENSE') {
       final data = file.content as List<int>;
-      File('out/' + filename)
+      File(filename)
         ..createSync(recursive: true)
         ..writeAsBytesSync(data);
     } 

@@ -7,7 +7,7 @@ import 'parseXml.dart';
 
 void parseLisence() async{
   //url is being for testing purposes only, later a tar file will be used which will be searched for LICENSE file
-  var url = Uri.parse('https://raw.githubusercontent.com/spdx/license-list-XML/master/src/MIT-Modern-Variant.xml');
+  var url = Uri.parse('https://raw.githubusercontent.com/spdx/license-list-XML/master/src/MIT-0.xml');
   var request = http.Request('GET', url);
   
   var response = await request.send();
@@ -19,9 +19,31 @@ void parseLisence() async{
       responseString += bytes;
     }
 
+    //trial code to strip xml and extract text
+    var temp = responseString;
+    temp = temp.replaceAll(RegExp(r'\n'), '');
+    temp = temp.replaceAll(RegExp(r'\r'), '');
+    // temp = temp.replaceAll(RegExp(r'\s{2,}'), ' ');
+    var exp = RegExp(r'<text>(.*)<\/text>');
+    var matches = exp.allMatches(temp);
+    if(matches.isNotEmpty) {
+      var match = matches.elementAt(0);
+      if(match != null) {
+        var m = match.group(0);
+        m = m.replaceAll(RegExp(r'<copyrightText>.*?<\/copyrightText>'), '');
+        m = m.replaceAll(RegExp(r'<titleText>.*?<\/titleText>'), '');
+        m = m.replaceAll(RegExp(r'<optionalText>.*?<\/optionalText>'), '');
+        m = m.replaceAll(RegExp(r'<.*?>'), '');
+        m = m.replaceAll(RegExp(r'\s{2,}'), ' ');
+        m = m.trim();
+        print(m);
+      }
+    }
+    //trial code ends
+    
     var xmlDoc = XmlDocument.parse(responseString);
 
-    //parse the response string
+    // parse the response string
     var parser = xmlParser(xmlDoc);
     var parsedString = parser.parse();
     print(parsedString);
