@@ -21,6 +21,7 @@ void getTarBall(String packageName) async{
   else {
     print(response.reasonPhrase);
   }
+
   var responseObject = json.decode(responseString);
   var archiveUrl = Uri.parse(responseObject['latest']['archive_url']);
 
@@ -32,25 +33,28 @@ void getTarBall(String packageName) async{
   if(requestTarResponse.statusCode == 200){
     tar_data = await requestTarResponse.stream.toBytes();
   }
-  final archive = GZipDecoder().decodeBytes(tar_data);
-  final archive1 = TarDecoder().decodeBytes(archive);
-  for (final file in archive1) {
-    final filename = file.name;
 
-    //replace with regex to identify LICENSE file
-    if (file.isFile && filename == 'LICENSE') {
+  //this is done since a tarball(tar.gz) is a combo of both gzip and tar compression
+  final archive = GZipDecoder().decodeBytes(tar_data);
+  final finalArchive = TarDecoder().decodeBytes(archive);
+
+  //replace with regex to identify LICENSE file as in pana
+  var licenseRegex = RegExp('LICENSE');
+  for (final file in finalArchive) {
+    final filename = file.name;
+    
+    if (file.isFile && licenseRegex.hasMatch(filename)) {
+      //valid license file
       final data = file.content as List<int>;
+      
+      //saving license file to dist
       File(filename)
         ..createSync(recursive: true)
         ..writeAsBytesSync(data);
     } 
-    // else {
-    //   await Directory('out/' + filename)
-    //     .create(recursive: true);
-    // }
   }
 
-  //code to save tarball to disk
+  //code to save tarball to disk (optional)
   final tarGz = GZipEncoder().encode(tar_data);
   final fp = File('$packageName.tar.gz');
   fp.writeAsBytesSync(tarGz);
