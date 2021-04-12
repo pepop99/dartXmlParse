@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'normalize.dart';
-import 'package:xml/xml.dart';
-
 import 'parseXml.dart';
 
 void getLicense() async{
@@ -32,7 +30,9 @@ void getLicense() async{
     print('Stripped down text: $licenseBody');
 
     // The normalizer will normalize the parsed string according to SPDX guidlines
-    // var normalizer = Normalize(parsedString);
+    var normalizer = Normalizer();
+    var normalizedLicense = normalizer.normalize(licenseBody);
+    print('Normalized License Text: $normalizedLicense');
   }
   else {
     print(response.reasonPhrase);

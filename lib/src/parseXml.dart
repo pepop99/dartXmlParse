@@ -1,5 +1,3 @@
-import 'package:xml/xml.dart';
-
 class xmlParser {
   String xmlString;
 
