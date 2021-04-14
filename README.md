@@ -5,11 +5,12 @@
 * Implemented parsing the xml file and extracting the license name, SPDX identifier and license body.
 * Implemented the code to fetch the tarball of a package from pub and locating its LICENSE.
 	* Will be used for testing and corner case detection
-* Working on a normalizer class to normalize the license as per License Classifer v2 and the SPDX guidelines. 
+* implemented a normalizer class to normalize the license as per License Classifer v2 and the SPDX guidelines. 
   * strip new lines and carriage returns
   * strip spaces
   * strip all punctuation, quote and parenthesis
   * trim copyright symbols and notice
+  * trim extraneous white spaces
   * replace equivalent words
   * strip comments
   * strip any other optional text
