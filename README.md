@@ -15,7 +15,7 @@
   * strip comments
   * strip any other optional text
 * Implemented a class to tokenize a supplied string based on delimeters.
-
+* Implemented reading of v2 corpus of LicenseClassifier
 
 
 A simple command-line application.
