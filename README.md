@@ -17,7 +17,10 @@
 * Implemented a class to tokenize a supplied string based on delimeters.
 * Implemented reading of v2 corpus of LicenseClassifier
 
+## To be implemented
 
+* Jaccard index calculator to determine possible matches. (this is done by matching only set of tokens and ignoring order)
+* Edit distance (Levenshtein distance) calculator to determine confidence of possible matches. (this is done to take into account the order of the non-optional text, similar to what is done by LicenseClassifier)
 A simple command-line application.
 
 Created from templates made available by Stagehand under a BSD-style
